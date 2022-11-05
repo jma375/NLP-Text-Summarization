@@ -24,7 +24,7 @@ def wrd_freq_plot(df,title):
     dfg = dfe.groupby('text').text.count() \
                                 .reset_index(name='count') \
                                 .sort_values(['count'], ascending=False) \
-                                .head(25).reset_index(drop=True)
+                                .head(25).reset_index(drop=True)                           
     dfg.plot.bar(x='text')
     plt.title(title)
 
