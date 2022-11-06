@@ -1,5 +1,6 @@
 #James Alfano
 import pandas as pd
+import numpy as np
 import sys
 import contractions
 import matplotlib.pyplot as plt
@@ -25,7 +26,7 @@ def wrd_freq_plot(df,title):
                                 .reset_index(name='count') \
                                 .sort_values(['count'], ascending=False) \
                                 .head(25).reset_index(drop=True)                           
-    dfg.plot.bar(x='text')
+    dfg.plot.bar(x='text',color='c',alpha=0.65)
     plt.title(title)
 
 
@@ -75,4 +76,33 @@ def lemmatize_wrds(df):
     wnl = WordNetLemmatizer()
     for i in range(len(df)):
         df.iloc[i,0] = [wnl.lemmatize(w) for w in df.iloc[i,0]] 
-        df.iloc[i,1] = [wnl.lemmatize(w) for w in df.iloc[i,1]] 
+        df.iloc[i,1] = [wnl.lemmatize(w) for w in df.iloc[i,1]]
+
+#Function to get number average number of words in article/summary
+def avg_num_words(df):
+    count = []
+    for i in range(len(df)):
+        count.append(len(df[i]))
+    avg = int(np.round(np.mean(count)))
+    return (avg, count)
+
+#Function to plot Average Number of words in Summaries and Articles 
+def plot_counts(avg_smry, smry_counts, avg_text, text_counts):
+    #First plot for word count in summaries 
+    plt.subplot(1, 2, 1)
+    plt.gcf().set_size_inches(12, 6)
+    plt.hist(smry_counts, bins=10, color='c', edgecolor='k', alpha=0.65)
+    plt.xlabel("Word Count")
+    plt.ylabel("Frequency")
+    plt.title("Word Count Per Summary")
+    plt.axvline(avg_smry, color='k', linestyle='dashed', linewidth=1,label = "Average Count = {0}".format(avg_smry)) #Add Average to hist
+    plt.legend()
+    #Second plot for word count in articles (i.e. "texts") 
+    plt.subplot(1, 2, 2)
+    plt.hist(text_counts, bins=10, color='c', edgecolor='k', alpha=0.65)
+    plt.xlabel("Word Count")
+    plt.title("Word Count Per Article")
+    plt.axvline(avg_text, color='k', linestyle='dashed', linewidth=1, label = "Average Count = {0}".format(avg_text)) #Add Average to hist
+    plt.legend()
+    plt.show
+    
