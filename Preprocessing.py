@@ -78,6 +78,7 @@ def lemmatize_wrds(df):
         df.iloc[i,0] = [wnl.lemmatize(w) for w in df.iloc[i,0]] 
         df.iloc[i,1] = [wnl.lemmatize(w) for w in df.iloc[i,1]]
 
+
 #Function to get number average number of words in article/summary
 def avg_num_words(df):
     count = []
@@ -85,6 +86,7 @@ def avg_num_words(df):
         count.append(len(df[i]))
     avg = int(np.round(np.mean(count)))
     return (avg, count)
+
 
 #Function to plot Average Number of words in Summaries and Articles 
 def plot_counts(avg_smry, smry_counts, avg_text, text_counts):
@@ -105,4 +107,11 @@ def plot_counts(avg_smry, smry_counts, avg_text, text_counts):
     plt.axvline(avg_text, color='k', linestyle='dashed', linewidth=1, label = "Average Count = {0}".format(avg_text)) #Add Average to hist
     plt.legend()
     plt.show
+
+
+#Function to add "_stop_" and "_start_" to summaries
+#stop/start used for training models
+def add_stop_start(df):
+    for i in range(len(df)):
+        df.iloc[i,1]= ['_start_'] + df.iloc[i,1] + ['_stop_']
     
