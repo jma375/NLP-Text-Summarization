@@ -54,9 +54,11 @@ def lower_case_text(df):
 
 #Function to tokenize df 
 def token(df):
-    for i in range(len(df)):
-        df.iloc[i,0] = nltk.word_tokenize(df.iloc[i,0])
-        df.iloc[i,1] = nltk.word_tokenize(df.iloc[i,1])
+    df['text'] = df['text'].apply(nltk.word_tokenize)
+    df['y'] = df['y'].apply(nltk.word_tokenize)
+    #for i in range(len(df)):
+        #df.iloc[i,0] = nltk.word_tokenize(df.iloc[i,0])
+        #df.iloc[i,1] = nltk.word_tokenize(df.iloc[i,1])
 
 
 #Removing stop words/punctuation
@@ -65,18 +67,16 @@ def rmv_stop_wrds(df):
     stop_words = set(stopwords.words('english'))
     char_rmv = ["'",",","``","`","-", "--","''",":",".","'s","said","$","(",")"]
     stop_words.update(char_rmv) #Adding extra stopwords
-    for i in range(len(df)):
-        df.iloc[i,0] = [w for w in df.iloc[i,0] if not w in stop_words] 
-        df.iloc[i,1] = [w for w in df.iloc[i,1] if not w in stop_words] 
+    df['text'] = df['text'].apply(lambda x: [item for item in x if item not in stop_words])
+    df['y'] = df['y'].apply(lambda x: [item for item in x if item not in stop_words])
 
 
 #Function to lemmatize 
 #i.e. transform the word to its root
 def lemmatize_wrds(df):
     wnl = WordNetLemmatizer()
-    for i in range(len(df)):
-        df.iloc[i,0] = [wnl.lemmatize(w) for w in df.iloc[i,0]] 
-        df.iloc[i,1] = [wnl.lemmatize(w) for w in df.iloc[i,1]]
+    df['text'] = df['text'].apply(lambda lst:[wnl.lemmatize(word) for word in lst])
+    df['y'] = df['y'].apply(lambda lst:[wnl.lemmatize(word) for word in lst])
 
 
 #Function to get number average number of words in article/summary
