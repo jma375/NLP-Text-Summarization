@@ -11,11 +11,6 @@ from nltk.stem import WordNetLemmatizer
 from datasets.dataset_dict import DatasetDict
 from datasets import Dataset
 
-#Run these commands when running for first time
-#nltk.download('punkt')
-#nltk.download('stopwords')
-#nltk.download('wordnet') 
-#!{sys.executable} -m pip install contractions
 
 #-----------------Preprocssing Functions---------------------
 
@@ -35,13 +30,13 @@ def rvm_article_intro(df):
 def expand_contractions(df):
     for i in range(len(df)):
         df.iloc[i,0] = contractions.fix(df.iloc[i,0])
-        df.iloc[i,1] = contractions.fix(df.iloc[i,1])
+        #df.iloc[i,1] = contractions.fix(df.iloc[i,1])
 
 
 #Lower Case Function
 def lower_case_text(df):
     df["text"] = df["text"].str.lower()
-    df["y"] = df["y"].str.lower()
+    #df["y"] = df["y"].str.lower()
 
 
 #Function to tokenize df 
@@ -54,10 +49,10 @@ def token(df):
 #e.g. 'a', 'an', 'not', 'do', 'over', 'themselves', "--", "''", ":", and "."
 def rmv_stop_wrds(df):
     stop_words = set(stopwords.words('english'))
-    char_rmv = ["'",",","``","`","-", "--","''",":",".","'s","said","$","(",")","?"]
+    char_rmv = ["'","``","`","-", "--","''",":","'s","said","$","(",")","?",".",","]
     stop_words.update(char_rmv) #Adding extra stopwords
     df['text'] = df['text'].apply(lambda x: [item for item in x if item not in stop_words])
-    df['y'] = df['y'].apply(lambda x: [item for item in x if item not in stop_words])
+    #df['y'] = df['y'].apply(lambda x: [item for item in x if item not in stop_words])
 
 
 #Function to lemmatize 
@@ -65,7 +60,7 @@ def rmv_stop_wrds(df):
 def lemmatize_wrds(df):
     wnl = WordNetLemmatizer()
     df['text'] = df['text'].apply(lambda lst:[wnl.lemmatize(word) for word in lst])
-    df['y'] = df['y'].apply(lambda lst:[wnl.lemmatize(word) for word in lst])
+    #df['y'] = df['y'].apply(lambda lst:[wnl.lemmatize(word) for word in lst])
 
 
 #Function to get number average number of words in article/summary
