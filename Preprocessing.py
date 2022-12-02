@@ -22,7 +22,6 @@ from datasets import Dataset
 def rvm_article_intro(df):
     for i in range(len(df)):
         df.iloc[i,0] = df.iloc[i,0][df.iloc[i,0].find('-')+3:] #+3 to remove the "-- "
-        #df['text'] = df['text'].apply([i.find('-')+3: for i in lst]) 
 
 
 #Expand contractions 
@@ -30,13 +29,11 @@ def rvm_article_intro(df):
 def expand_contractions(df):
     for i in range(len(df)):
         df.iloc[i,0] = contractions.fix(df.iloc[i,0])
-        #df.iloc[i,1] = contractions.fix(df.iloc[i,1])
 
 
 #Lower Case Function
 def lower_case_text(df):
     df["text"] = df["text"].str.lower()
-    #df["y"] = df["y"].str.lower()
 
 
 #Function to tokenize df 
@@ -52,7 +49,6 @@ def rmv_stop_wrds(df):
     char_rmv = ["'","``","`","-", "--","''",":","'s","said","$","(",")","?",".",","]
     stop_words.update(char_rmv) #Adding extra stopwords
     df['text'] = df['text'].apply(lambda x: [item for item in x if item not in stop_words])
-    #df['y'] = df['y'].apply(lambda x: [item for item in x if item not in stop_words])
 
 
 #Function to lemmatize 
@@ -60,7 +56,6 @@ def rmv_stop_wrds(df):
 def lemmatize_wrds(df):
     wnl = WordNetLemmatizer()
     df['text'] = df['text'].apply(lambda lst:[wnl.lemmatize(word) for word in lst])
-    #df['y'] = df['y'].apply(lambda lst:[wnl.lemmatize(word) for word in lst])
 
 
 #Function to get number average number of words in article/summary
