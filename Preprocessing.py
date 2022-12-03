@@ -16,12 +16,12 @@ from datasets import Dataset
 
 
 
-#Each article begins with a location, source, and --
-#e.g. "MINNEAPOLIS, Minnesota (CNN) --" or "WASHINGTON (CNN) --"
+#Each article begins with a location and source
+#e.g. "MINNEAPOLIS, Minnesota (CNN) " or "WASHINGTON (CNN)"
 #This function seeks to remove the intro
 def rvm_article_intro(df):
     for i in range(len(df)):
-        df.iloc[i,0] = df.iloc[i,0][df.iloc[i,0].find('-')+3:] #+3 to remove the "-- "
+        df.iloc[i,0] = df.iloc[i,0][df.iloc[i,0].find('(cnn)')+5:] #Looks to remove "(CNN)" and everything before
 
 
 #Expand contractions 
@@ -46,9 +46,9 @@ def token(df):
 #e.g. 'a', 'an', 'not', 'do', 'over', 'themselves', "--", "''", ":", and "."
 def rmv_stop_wrds(df):
     stop_words = set(stopwords.words('english'))
-    char_rmv = ["'","``","`","-", "--","''",":","'s","said","$","(",")","?",".",","]
+    char_rmv = ["'","``","`","-", "--","''",":","'s","said","$","(",")","?",".",",","’","‘"]
     stop_words.update(char_rmv) #Adding extra stopwords
-    df['text'] = df['text'].apply(lambda x: [item for item in x if item not in stop_words])
+    df['text'] = df['text'].apply(lambda x: [item for item in x if item not in char_rmv])
 
 
 #Function to lemmatize 
@@ -131,7 +131,6 @@ def wrd_freq_plot(df,title):
     ax2.tick_params(axis='x', rotation=45,right= True)
     fig.suptitle('{0}: Word Frequencies'.format(title))
     fig.tight_layout(pad=1.0)
-    
 
 #Function to aggregate all preprocessing functions into one
 def preprocess(df, type, plots):
