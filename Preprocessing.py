@@ -4,6 +4,7 @@ import numpy as np
 import sys
 import contractions
 import matplotlib.pyplot as plt
+from matplotlib.pyplot import figure
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
@@ -42,17 +43,15 @@ def token(df):
     df['y'] = df['y'].apply(nltk.word_tokenize)
 
 
-#Removing stop words/punctuation
-#e.g. 'a', 'an', 'not', 'do', 'over', 'themselves', "--", "''", ":", and "."
-def rmv_stop_wrds(df):
-    stop_words = set(stopwords.words('english'))
-    char_rmv = ["'","``","`","-", "--","''",":","'s","said","$","(",")","?",".",",","’","‘"]
-    stop_words.update(char_rmv) #Adding extra stopwords
+#Removing special characters
+#e.g. "'","``","`","-", and "--"
+def rmv_special_chars(df):
+    char_rmv = ["'","``","`","-", "--","''",":","'s","$","(",")","?",".",",","’","‘"]
     df['text'] = df['text'].apply(lambda x: [item for item in x if item not in char_rmv])
 
 
 #Function to lemmatize 
-#i.e. transform the word to its root
+#i.e. transform the word to its root, or lemma 
 def lemmatize_wrds(df):
     wnl = WordNetLemmatizer()
     df['text'] = df['text'].apply(lambda lst:[wnl.lemmatize(word) for word in lst])
@@ -98,51 +97,31 @@ def plot_counts(df):
 
 #Function to plot word frequencies 
 def wrd_freq_plot(df,title):
-    #plot 1
-    fig, (ax1, ax2) = plt.subplots(2)
-    plt.gcf().set_size_inches(14, 8)
-    # use explode to expand the lists into separate rows
+    #Set size
+    fig = plt.figure(figsize=(8, 6))
     temp = df.text.explode().to_frame().reset_index(drop=True)
-
-    # groupby the values in the column, get the count and sort
+    # groupby the values in the column, get the count and sort descending
     temp = temp.groupby('text').text.count() \
                                     .reset_index(name='count') \
                                     .sort_values(['count'], ascending=False) \
-                                    .head(25).reset_index(drop=True)
-                            
-    ax1.bar(temp["text"], temp["count"],color='c',alpha=0.65)
-    ax1.set_title("Word Frequency Before Removing Stopwords and and Performing Lemmatization")
-    ax1.tick_params(axis='x', rotation=45,right= True)
+                                    .head(25).reset_index(drop=True) #top 25 most freq words
+    plt.bar(temp["text"], temp["count"],color='c',alpha=0.65)
+    plt.title("Word Frequencies")
+    plt.title('{0}: Word Frequencies'.format(title))
+    plt.tick_params(axis='x', rotation=45,right= True) #Rotate x axis labels         
 
-    #remove stop words and lemmatize before ploting again 
-    rmv_stop_wrds(df)
-    lemmatize_wrds(df)
 
-    #plot 2 i.e. after we removed stop words and lemmatized
-    temp = df.text.explode().to_frame().reset_index(drop=True)
-    # groupby the values in the column, get the count and sort
-    temp = temp.groupby('text').text.count() \
-                                    .reset_index(name='count') \
-                                    .sort_values(['count'], ascending=False) \
-                                    .head(25).reset_index(drop=True)
-                            
-    ax2.bar(temp["text"], temp["count"],color='c',alpha=0.65)
-    ax2.set_title("Word Frequency After Removing Stopwords and Performing Lemmatization")
-    ax2.tick_params(axis='x', rotation=45,right= True)
-    fig.suptitle('{0}: Word Frequencies'.format(title))
-    fig.tight_layout(pad=1.0)
 
 #Function to aggregate all preprocessing functions into one
-def preprocess(df, type, plots):
+def preprocess(df, type):
     expand_contractions(df)
     lower_case_text(df)
     rvm_article_intro(df)
     token(df)
-    if plots == 1:
-        wrd_freq_plot(df,type)
-    elif plots == 0:
-        rmv_stop_wrds(df)
-        lemmatize_wrds(df)
+    rmv_special_chars(df)
+    wrd_freq_plot(df,type)
+    #lemmatize_wrds(df)
+    
 
 
 #Recombine data to be in correct format
