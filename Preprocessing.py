@@ -21,51 +21,27 @@ from datasets import Dataset
 #Each article begins with a location and source
 #e.g. "MINNEAPOLIS, Minnesota (CNN) " or "WASHINGTON (CNN)"
 #This function seeks to remove the intro
-#def rvm_article_intro(df):
-    #for i in range(len(df)):
-        #df.iloc[i,0] = df.iloc[i,0][df.iloc[i,0].find('(cnn)')+5:] #Looks to remove "(CNN)" and everything before
-    #for i in range(len(dataset["article"])):
-    #    dataset["article"][i] = dataset["article"][i][dataset["article"][i].find('(cnn)')+5:]
 def rvm_article_intro(dataset):
     return {"article": dataset["article"][dataset["article"].find('(cnn)')+5:]}
 
+
 #Expand contractions 
 #e.g. they're -> they are
-#def expand_contractions(dataset):
-    #for i in range(len(dataset["article"])):
-        #df.iloc[i,0] = contractions.fix(df.iloc[i,0])
-        #dataset["article"][i] = contractions.fix(dataset["article"][i])
 def expand_contractions(dataset):
     return {"article": contractions.fix(dataset["article"])}
 
 
 #Lower Case Function
 def lower_case_text(dataset):
-    #df["text"] = df["text"].str.lower()
-    #df["train"]["article"] = df["train"]["article"].str.lower()
-    #dataset["article"] = dataset["article"].str.lower()
     return {"article": dataset["article"].lower()}
 
 
-#Function to tokenize df 
-#def token(df):
-    #df['text'] = df['text'].apply(nltk.word_tokenize)
-    #df['y'] = df['y'].apply(nltk.word_tokenize)
-    #df["text"] = df["text"].str.findall(r"[\w']+|[.,!?;]")
-    #df["y"] = df["y"].str.findall(r"[\w']+|[.,!?;]")
-    #dataset["article"] = dataset["article"].str.findall(r"[\w']+|[.,!?;]")
-    #dataset["highlights"] = dataset["article"].str.findall(r"[\w']+|[.,!?;]")
+#Function to split strings into lists of words 
 def split_str(dataset):
     return {"article": re.findall(r"[\w']+|[.,!?;]",dataset["article"])}
     
 
-
 #Removing special characters
-#e.g. "'","``","`","-", and "--"
-#def rmv_special_chars(df):
-    #char_rmv = ["'","``","`","-", "--","''",":","'s","$","(",")","?",".",",","’","‘"]
-    #df['text'] = df['text'].apply(lambda x: [item for item in x if item not in char_rmv])
-    #dataset['article'] = dataset['article'].apply(lambda x: [item for item in x if item not in char_rmv])
 def rmv_special_chars(dataset):
     return {"article": re.sub('[^A-Za-z0-9 ]+', '',dataset["article"])}
 
