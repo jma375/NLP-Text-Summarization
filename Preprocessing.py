@@ -124,35 +124,8 @@ def wrd_freq_plot(dataset,split,title):
 
 #Function to aggregate all preprocessing functions into one
 def preprocess(dataset):
-    dataset = dataset.map(expand_contractions)#expand_contractions(df)
-    dataset = dataset.map(lower_case_text)#lower_case_text(df)
-    dataset = dataset.map(rvm_article_intro) #rvm_article_intro(df)
-    dataset = dataset.map(rmv_special_chars) #rmv_special_chars(df)
+    dataset = dataset.map(expand_contractions)#
+    dataset = dataset.map(lower_case_text)
+    dataset = dataset.map(rvm_article_intro)
+    dataset = dataset.map(rmv_special_chars) 
     return dataset
-    #temp = dataset.map(split_str) #token(df)
-    #wrd_freq_plot(df,type)
-    #lemmatize_wrds(df)
-    
-
-
-""" #Recombine data to be in correct format
-def combine_data(subset_train,subset_test,subset_valid):
-    #Here we rejoin the texts    
-    subset_valid["text"] = subset_valid["text"].apply(lambda x: ' '.join(wrd for wrd in x))
-    subset_valid["y"] = subset_valid["y"].apply(lambda x: ' '.join(wrd for wrd in x))
-
-    subset_test["text"] = subset_test["text"].apply(lambda x: ' '.join(wrd for wrd in x))
-    subset_test["y"] = subset_test["y"].apply(lambda x: ' '.join(wrd for wrd in x))
-
-    subset_train["text"] = subset_train["text"].apply(lambda x: ' '.join(wrd for wrd in x))
-    subset_train["y"] = subset_train["y"].apply(lambda x: ' '.join(wrd for wrd in x))
-
-    #here we recombine our df to 'datasets'
-    d = {'train':Dataset.from_dict({"article":subset_train["text"],"highlights":subset_train["y"],"id":subset_train["id"]}),
-        'validation':Dataset.from_dict({"article":subset_valid["text"],"highlights":subset_valid["y"],"id":subset_valid["id"]}),
-        'test':Dataset.from_dict({"article":subset_test["text"],"highlights":subset_test["y"],"id":subset_test["id"]})
-        }
-
-    dataset = DatasetDict(d)
-    return dataset
- """
